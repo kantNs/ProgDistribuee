@@ -1,3 +1,5 @@
+import java.util.concurrent.Semaphore;
+
 class decremente implements Runnable {
     int i;
     decremente(int i) {
@@ -8,7 +10,7 @@ class decremente implements Runnable {
             int j = i;
             try {
                 Thread.sleep(1000);
-                i--;
+                j--;
                 // Displaying the thread that is running
                 System.out.println(" Decremente " +
                         Thread.currentThread().getId() +
@@ -37,7 +39,7 @@ class incremente implements Runnable {
             int j = i;
             try {
                 Thread.sleep(1000);
-                i++;
+                j++;
                 // Displaying the thread that is running
                 System.out.println(" Incremente  " +
                         Thread.currentThread().getId() +
@@ -62,10 +64,11 @@ class incremente implements Runnable {
 
 public class Main {
 
-
+    static Semaphore semaphore = new Semaphore(2);
 
     public static void main(String[] args) {
 // TODO code application logic here
+
         int i=65;
 
         Thread thread1 = new Thread(new decremente(i), "thread1");
