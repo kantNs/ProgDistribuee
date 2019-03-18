@@ -32,7 +32,9 @@ public class memoryShared
 
 class decremente implements Runnable {
 
-    public decremente(int i) {
+    private memoryShared i;	
+	
+    public decremente(memoryShared i) {
         this.i = i;
     }
     public void run() {
@@ -60,8 +62,10 @@ class decremente implements Runnable {
 }
 
 class incremente implements Runnable {
-    int i;
-    public incremente(int i) {
+
+    private memoryShared i;	
+	
+    public incremente(memoryShared i) {
         this.i = i;
     }
     public void run() {
