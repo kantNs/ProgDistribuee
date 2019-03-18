@@ -1,14 +1,45 @@
+public class memoryShared
+{   
+	private int i;
+    
+    //constructeur
+    private memoryShared()
+    {
+    	i = 65;
+    }
+    
+    //getter
+    public int getI(){
+    	return i;
+    }
+    //setter
+    public void setI(int i){
+    	this.i = i;
+    }
+    
+    private static memoryShared Inst = null;
+     
+    //Unique instance
+    public static synchronized memoryShared getInstance()
+    {           
+        if (Inst == null)
+        {   Inst = new memoryShared(); 
+        }
+        return Inst;
+    }
+}
+
+
 class decremente implements Runnable {
-    int i;
-    decremente(int i) {
+
+    public decremente(int i) {
         this.i = i;
     }
     public void run() {
-        while(1==1) {
-            int j = i;
             try {
+                int ivalue = i.getI();
                 Thread.sleep(1000);
-                i--;
+                ivalue--;
                 // Displaying the thread that is running
                 System.out.println(" Decremente " +
                         Thread.currentThread().getId() +
@@ -16,11 +47,12 @@ class decremente implements Runnable {
                 System.out.println("i a pour valeur " +
                         i +
                         " !!");
+                i.setI(ivalue);
+                
             } catch (Exception e) {
                 // Throwing an exception
                 System.out.println("Exception is caught");
             }
-            i = j;
         }
 
     }
@@ -29,27 +61,27 @@ class decremente implements Runnable {
 
 class incremente implements Runnable {
     int i;
-    incremente(int i) {
+    public incremente(int i) {
         this.i = i;
     }
     public void run() {
-        while(1==1) {
-            int j = i;
             try {
+                int ivalue = i.getI();
                 Thread.sleep(1000);
-                i++;
+                ivalue++;
                 // Displaying the thread that is running
-                System.out.println(" Incremente  " +
+                System.out.println(" Incremente " +
                         Thread.currentThread().getId() +
                         " is running \n");
                 System.out.println("i a pour valeur " +
-                       i +
+                        i +
                         " !!");
+                i.setI(ivalue);
+                
             } catch (Exception e) {
                 // Throwing an exception
                 System.out.println("Exception is caught");
             }
-            i = j;
         }
 
     }
@@ -61,12 +93,12 @@ class incremente implements Runnable {
 
 
 public class Main {
-    private int i;
+    private memoryShared i = null;
     private static Thread thread1 = null;
     private static Thread thread2 = null;
 
     public static void Main(){
-         i=65;
+         i = memoryShared.getInstance();
          thread1 = new Thread(new decremente(i), "thread1");
          thread2 = new Thread(new incremente(i), "thread2");
     }
@@ -81,7 +113,7 @@ public class Main {
         thread1.join();
         thread2.join();
         
-        System.out.println("Valeur de i : "+ i);
+        System.out.println("Valeur de i : "+ i.getI());
         
         System.exit(0);
 
