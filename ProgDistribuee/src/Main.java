@@ -61,17 +61,29 @@ class incremente implements Runnable {
 
 
 public class Main {
+    private int i;
+    private static Thread thread1 = null;
+    private static Thread thread2 = null;
 
-
+    public static void Main(){
+         i=65;
+         thread1 = new Thread(new decremente(i), "thread1");
+         thread2 = new Thread(new incremente(i), "thread2");
+    }
 
     public static void main(String[] args) {
 // TODO code application logic here
-        int i=65;
-
-        Thread thread1 = new Thread(new decremente(i), "thread1");
-        Thread thread2 = new Thread(new incremente(i), "thread2");
+       
+        Main();
+        
         thread1.start();
         thread2.start();
+        thread1.join();
+        thread2.join();
+        
+        System.out.println("Valeur de i : "+ i);
+        
+        System.exit(0);
 
     }
 }
