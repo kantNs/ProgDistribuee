@@ -34,15 +34,18 @@ class memoryShared
 
 class decremente implements Runnable {
 
-    private memoryShared i;	
+    private memoryShared i;
+    private Semaphore semaphore;
 	
-    public decremente(memoryShared i) {
+    public decremente(memoryShared i,Semaphore semaphore) {
         this.i = i;
+        this.semaphore = semaphore;
     }
     public void run() {
             try {
+                semaphore.acquire();
                 int ivalue = i.getI();
-                Thread.sleep(1000);
+                Thread.sleep(900);
                 ivalue--;
                 // Displaying the thread that is running
                 System.out.println(" Decremente " +
@@ -52,11 +55,12 @@ class decremente implements Runnable {
                         i +
                         " !!");
                 i.setI(ivalue);
-                
+
             } catch (Exception e) {
                 // Throwing an exception
                 System.out.println("Exception is caught");
             }
+        semaphore.release();
         }
 
     }
@@ -65,13 +69,16 @@ class decremente implements Runnable {
 
 class incremente implements Runnable {
 
-    private memoryShared i;	
+    private memoryShared i;
+    private Semaphore semaphore;
 	
-    public incremente(memoryShared i) {
+    public incremente(memoryShared i,Semaphore semaphore) {
         this.i = i;
+        this.semaphore = semaphore;
     }
     public void run() {
             try {
+                semaphore.acquire(1);
                 int ivalue = i.getI();
                 Thread.sleep(1000);
                 ivalue++;
@@ -83,11 +90,15 @@ class incremente implements Runnable {
                         i +
                         " !!");
                 i.setI(ivalue);
+
+
+
                 
             } catch (Exception e) {
                 // Throwing an exception
                 System.out.println("Exception is caught");
             }
+        semaphore.release();
         }
 
     }
@@ -102,15 +113,17 @@ public class Main {
 
     private static Thread thread1 = null;
     private static Thread thread2 = null;
-
+    private static  Semaphore semaphore = null;
 
     public static void main(String[] args) {
 // TODO code application logic here
         memoryShared i= memoryShared.getInstance();
-        thread1 = new Thread(new decremente(i), "thread1");
-        thread2 = new Thread(new incremente(i), "thread2");
+        semaphore = new Semaphore(1);
+        thread1 = new Thread(new decremente(i,semaphore), "thread1");
+        thread2 = new Thread(new incremente(i,semaphore), "thread2");
+
         System.out.println("Valeur de i : "+ i.getI());
-        
+
         thread1.start();
         thread2.start();
         try {
