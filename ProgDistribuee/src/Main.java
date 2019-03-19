@@ -1,6 +1,6 @@
 import java.util.concurrent.*;
 
-public class memoryShared
+class memoryShared
 {   
 	private int i;
     
@@ -61,7 +61,7 @@ class decremente implements Runnable {
 
     }
 
-}
+
 
 class incremente implements Runnable {
 
@@ -91,7 +91,7 @@ class incremente implements Runnable {
         }
 
     }
-}
+
 
 
 
@@ -99,26 +99,38 @@ class incremente implements Runnable {
 
 
 public class Main {
-    private memoryShared i = null;
+
     private static Thread thread1 = null;
     private static Thread thread2 = null;
 
-    public static void Main(){
-         i = memoryShared.getInstance();
-         thread1 = new Thread(new decremente(i), "thread1");
-         thread2 = new Thread(new incremente(i), "thread2");
-    }
 
     public static void main(String[] args) {
 // TODO code application logic here
-       
-        Main();
+        memoryShared i= memoryShared.getInstance();
+        thread1 = new Thread(new decremente(i), "thread1");
+        thread2 = new Thread(new incremente(i), "thread2");
+        System.out.println("Valeur de i : "+ i.getI());
         
         thread1.start();
         thread2.start();
-        thread1.join();
-        thread2.join();
-        
+        try {
+            thread1.join();
+
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        try {
+            thread2.join();
+
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        try {
+            thread2.join();
+
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         System.out.println("Valeur de i : "+ i.getI());
         
         System.exit(0);
